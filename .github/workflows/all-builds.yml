@@ -10,7 +10,7 @@ on:
 env:
   BUILD_NUMBER: 1
   BUILD_VERSION: 1.0.0
-  PYTHON_VERSION: 3.10.11 # نستخدم 3.10 لضمان توافق sklearn و scapy
+  PYTHON_VERSION: 3.10.11
   FLUTTER_VERSION: 3.22.2
 
 jobs:
@@ -27,25 +27,21 @@ jobs:
 
     - name: Install Dependencies
       run: |
-        chcp 65001
         python -m pip install --upgrade pip
-        # تثبيت flet والمكتبات الأمنية والذكاء الاصطناعي
         pip install flet scapy pandas numpy joblib scikit-learn pyinstaller
 
     - name: Flet Build Windows (EXE)
-      shell: bash
+      shell: pwsh
       env:
         PYTHONIOENCODING: utf-8
         PYTHONUTF8: 1
       run: |
-        chcp 65001
-        # استخدام flet build مع تضمين المكتبات الضخمة يدوياً عبر pyinstaller_args
-        # تأكد من أن أسماء الملفات ai_agent.py و gui.py صحيحة في مستودعك
-        flet build windows --verbose --no-rich-output \
-          --product "AI-SOC Sentinel" \
-          --build-number=$BUILD_NUMBER \
-          --build-version=$BUILD_VERSION \
-          --patch-version=$BUILD_NUMBER \
+        # ملاحظة لـ فارس: استخدمنا PowerShell (pwsh) لتجنب أخطاء bash على ويندوز
+        flet build windows --verbose --no-rich-output `
+          --product "AI-SOC Sentinel" `
+          --build-number $env:BUILD_NUMBER `
+          --build-version $env:BUILD_VERSION `
+          --patch-version $env:BUILD_NUMBER `
           --pyinstaller-args "--collect-all sklearn --collect-all scipy --collect-all pandas --collect-all numpy --add-data 'ai_agent.py;.' --add-data 'gui.py;.'"
 
     - name: Upload Windows Artifact
@@ -69,7 +65,6 @@ jobs:
     - name: Install Python Dependencies
       run: |
         python -m pip install --upgrade pip
-        # ملاحظة: sklearn لا تعمل داخل APK مباشرة، سيتم بناؤها كواجهة فقط
         pip install flet
 
     - name: Setup Flutter ${{ env.FLUTTER_VERSION }}
