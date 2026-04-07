@@ -101,23 +101,23 @@ jobs:
         python -m pip install --upgrade pip
         pip install flet scapy pandas numpy joblib scikit-learn
 
-    - name: Setup Flutter ${{ env.FLUTTER_VERSION }}
+    - name: Setup Flutter
       uses: subosito/flutter-action@v2
       with:
-        flutter-version: ${{ env.FLUTTER_VERSION }}
+        channel: 'stable'
 
     - name: Flet Build Windows
       shell: pwsh
       run: |
         $env:PYTHONUTF8=1
-        flet build windows --verbose --no-rich-output --build-number $env:BUILD_NUMBER --build-version $env:BUILD_VERSION
+        # إضافة echo "y" لتجاوز سؤال التحديث التلقائي في GitHub Actions
+        echo "y" | flet build windows --verbose --no-rich-output --build-number $env:BUILD_NUMBER --build-version $env:BUILD_VERSION
 
     - name: Upload Windows Artifact
       uses: actions/upload-artifact@v4
       with:
         name: windows-build-artifact
         path: build/windows
-
   build-aab:
     runs-on: macos-latest
 
