@@ -1,1 +1,7 @@
-flet==0.22.*
+flet==0.84.0.dev0
+scikit-learn
+pandas
+numpy
+threading
+joblib
+scapy
